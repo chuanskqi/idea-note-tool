@@ -49,12 +49,13 @@ public class AddNoteAction extends AnAction {
 
         List<String> allCategory = com.chuanskqi.note.service.NoteContext.getNoteService().getAllNotes().stream()
             .map(Note::getCategory)
+            .distinct()
             .collect(Collectors.toList());
 
         String selectCode = editor.getDocument().getText().split("\n")[logicalPos.line].trim();
         String category = Messages.showEditableChooseDialog(selectCode,
             "添加笔记", Messages.getInformationIcon(),
-            allCategory.toArray(new String[0]), allCategory.get(0), null);
+            allCategory.toArray(new String[allCategory.size()]), allCategory.get(0), null);
 
         if (StringUtils.isNotBlank(category)) {
             String alias = Messages.showInputDialog(fileName, "添加备注", Messages.getInformationIcon());

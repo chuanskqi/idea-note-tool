@@ -21,9 +21,11 @@ public class NoteStorage  {
 
     NoteService noteService;
 
+    static final String file_suffix = "_note.iml";
+
     public NoteStorage(NoteService noteService, Project project) {
         this.noteService = noteService;
-        this.path = project.getBasePath() + File.separator + project.getName() + "_note.iml";
+        this.path = project.getBasePath() + File.separator + project.getName() + file_suffix;
 
         NoticeService.notice("读取代码笔记路径\n" + path, project);
         File noteListFile = new File(path);
