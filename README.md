@@ -8,6 +8,7 @@ idea社区版,自带Bookmarks笔记工具有一些bug,例如切换git分支时,�
 2022.06.12
 
 ## 效果图
+![image](src/main/resources/pic/img.png)   
 ![image](src/main/resources/pic/show_note.png)   
 ![image](src/main/resources/pic/add_note.png)   
 ![image](src/main/resources/pic/add_note_category.png)      
