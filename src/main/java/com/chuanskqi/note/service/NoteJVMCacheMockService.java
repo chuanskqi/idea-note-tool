@@ -11,14 +11,14 @@ public class NoteJVMCacheMockService extends NoteJVMCacheService {
         List<Note> list = new ArrayList<>();
         Note n1 = Note.builder()
             .project("aaaaaaaa")
-            .category("功能1")
+            .category("fuction 1")
             .fileName("Test.java")
             .lineNumber(7)
             .build();
 
         Note n2 = Note.builder()
             .project("aaaaaaaa")
-            .category("功能2")
+            .category("fuction 2")
             .fileName("Test.java")
             .lineNumber(2)
             .build();

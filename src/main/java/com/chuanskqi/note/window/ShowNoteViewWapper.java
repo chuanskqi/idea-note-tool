@@ -22,6 +22,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -87,7 +88,6 @@ public class ShowNoteViewWapper extends DialogWrapper {
         tree.setDragEnabled(true);
         tree.setExpandableItemsEnabled(true);
         tree.setCellRenderer(customCellRenderer());
-
         // 点击目录树跳转到指定代码行
         tree.addTreeSelectionListener(new TreeSelectionListener() {
             @Override
@@ -136,10 +136,10 @@ public class ShowNoteViewWapper extends DialogWrapper {
      * 添加按钮事件
      */
     private void addAction(AnActionButton anActionButton) {
-        String newCategoryName = Messages.showInputDialog("添加目录", "新目录", Messages.getInformationIcon());
+        String newCategoryName = Messages.showInputDialog("", "new category", Messages.getInformationIcon());
         if (StringUtils.isNotBlank(newCategoryName)) {
             DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-            newChildNode(root, newCategoryName);
+            DefaultMutableTreeNode child = newChildNode(root, newCategoryName);
 
             Note newNote = Note.builder()
                 .category(newCategoryName)
@@ -164,8 +164,37 @@ public class ShowNoteViewWapper extends DialogWrapper {
                 newChildNode(categoryNode, note);
                 NoteContext.getNoteService().addNote(note);
                 model.reload();
+                // 展开笔记节点
+                expandCategoryNode(categoryNode);
                 break;
             }
+        }
+    }
+
+    /**
+     * 展开目录节点
+     */
+    private void expandCategoryNode(DefaultMutableTreeNode categoryNode) {
+        //
+        tree.expandPath(new TreePath(new TreeNode[] {(TreeNode) model.getRoot(), categoryNode}));
+    }
+
+    private static void expandAll(JTree tree, TreePath parent, boolean expand) {
+        // Traverse children
+        TreeNode node = (TreeNode) parent.getLastPathComponent();
+        if (node.getChildCount() >= 0) {
+            for (Enumeration e = node.children(); e.hasMoreElements(); ) {
+                TreeNode n = (TreeNode) e.nextElement();
+                TreePath path = parent.pathByAddingChild(n);
+                expandAll(tree, path, expand);
+            }
+        }
+
+        // Expansion or collapse must be done bottom-up
+        if (expand) {
+            tree.expandPath(parent);
+        } else {
+            tree.collapsePath(parent);
         }
     }
 
@@ -177,9 +206,9 @@ public class ShowNoteViewWapper extends DialogWrapper {
 
         if (node instanceof String) {
             if (lastSelectedNode.getChildCount() > 0) {
-                Messages.showErrorDialog("先删除目录下所有笔记才能删除目录", "删除目录");
+                Messages.showErrorDialog("exist note! delete first", "delete note");
             } else {
-                if (Messages.YES == Messages.showYesNoCancelDialog((String) node, "删除目录?", Messages.getWarningIcon())) {
+                if (Messages.YES == Messages.showYesNoCancelDialog((String) node, "dangerous delete, are you sure?", Messages.getWarningIcon())) {
                     // 没有笔记的时候,才允许删除目录
                     DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
                     root.remove(lastSelectedNode);
@@ -189,7 +218,7 @@ public class ShowNoteViewWapper extends DialogWrapper {
             }
         } else if (node instanceof Note) {
             Note note = (Note) node;
-            if (Messages.YES == Messages.showYesNoCancelDialog(note.toString(), "删除笔记?", Messages.getWarningIcon())) {
+            if (Messages.YES == Messages.showYesNoCancelDialog(note.toString(), "delete note?", Messages.getWarningIcon())) {
                 // 删除笔记
                 DefaultMutableTreeNode parent = (DefaultMutableTreeNode)lastSelectedNode.getParent();
                 parent.remove(lastSelectedNode);
@@ -207,7 +236,7 @@ public class ShowNoteViewWapper extends DialogWrapper {
     private void editAction(AnActionButton anActionButton) {
         Object categoryName = lastSelectedNode.getUserObject();
         if (categoryName instanceof String) {
-            String newCategoryName = Messages.showInputDialog("编辑目录", "修改目录", Messages.getWarningIcon(), (String) categoryName, null);
+            String newCategoryName = Messages.showInputDialog("", "modify category", Messages.getWarningIcon(), (String) categoryName, null);
             if (StringUtils.isNotBlank(newCategoryName)) {
                 // 修改目录名称
                 lastSelectedNode.setUserObject(newCategoryName);

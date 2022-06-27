@@ -4,6 +4,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.CaretModel;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;
+import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
@@ -46,7 +47,7 @@ public class CodeUtil {
             // 移动到目标行
             caretModel.moveToLogicalPosition(new LogicalPosition(lineNumber, 0));
             // 将目标行滚动到屏幕中央
-            //editor.getScrollingModel().scrollToCaret(ScrollType.CENTER_DOWN);
+            editor.getScrollingModel().scrollToCaret(ScrollType.CENTER);
             // 移除如果有选择的内容
             //editor.getSelectionModel().removeSelection();
         }

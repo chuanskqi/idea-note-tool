@@ -22,7 +22,7 @@ public class NoteWindow implements ToolWindowFactory {
         NoteContext.init(project);
         // 创建一个JComponent展示框,并填充笔记内容
         JComponent centerPanel = NoteContext.getShowNoteViewWapper().createCenterPanel();
-        Content content = contentFactory.createContent(centerPanel, "我的笔记", false);
+        Content content = contentFactory.createContent(centerPanel, "my note", false);
         // 添加到IDEA窗口里就完成了插件窗口注册
         toolWindow.getContentManager().addContent(content);
     }
