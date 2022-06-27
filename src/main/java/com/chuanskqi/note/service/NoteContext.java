@@ -23,12 +23,13 @@ public class NoteContext {
 
     public static synchronized void init(Project project) {
         if (hasInited.get()) {
-            // 初始化.
-            noteService = new NoteJVMCacheService();
-            noteStorage = new NoteStorage(noteService, project);
-            showNoteViewWapper = new ShowNoteViewWapper(project);
-            hasInited.set(true);
+            return;
         }
+        // 初始化.
+        noteService = new NoteJVMCacheService();
+        noteStorage = new NoteStorage(noteService, project);
+        showNoteViewWapper = new ShowNoteViewWapper(project);
+        hasInited.set(true);
     }
 
     public static NoteService getNoteService() {
