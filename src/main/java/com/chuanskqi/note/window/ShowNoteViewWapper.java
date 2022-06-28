@@ -229,6 +229,7 @@ public class ShowNoteViewWapper extends DialogWrapper {
 
                 noteService.deleteNoteById(note.getId());
                 model.reload();
+                expandCategoryNode(parent);
             }
         }
     }
