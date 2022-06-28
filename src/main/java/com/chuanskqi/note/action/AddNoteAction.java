@@ -1,7 +1,7 @@
 package com.chuanskqi.note.action;
 
 import com.chuanskqi.note.pojo.Note;
-import com.chuanskqi.note.service.NoteContext;
+import com.chuanskqi.note.service.NoteContextHolder;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -47,7 +47,7 @@ public class AddNoteAction extends AnAction {
         // 可视行()
         //VisualPosition visualPos = primaryCaret.getVisualPosition();
 
-        List<String> allCategory = com.chuanskqi.note.service.NoteContext.getNoteService().getAllNotes().stream()
+        List<String> allCategory = NoteContextHolder.current(e.getProject()).getNoteService().getAllNotes().stream()
             .map(Note::getCategory)
             .distinct()
             .collect(Collectors.toList());
@@ -67,7 +67,7 @@ public class AddNoteAction extends AnAction {
                 .project(projectName)
                 .build();
             newNote.setCategory(category);
-            NoteContext.getShowNoteViewWapper().addNote(category, newNote);
+            NoteContextHolder.current(e.getProject()).getShowNoteViewWapper().addNote(category, newNote);
         }
     }
 }

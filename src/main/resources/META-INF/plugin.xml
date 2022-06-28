@@ -11,7 +11,7 @@
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description>
         <![CDATA[
-            <p>添加笔记
+            <p>add note
             <ul>
               <li>用法介绍1111111</li>
               <li>用法介绍2222222</li>
@@ -41,7 +41,7 @@
     <actions>
         <!-- 添加笔记Action事件 -->
         <action id="com.chuanskqi.note.action.Pop"
-                class="com.chuanskqi.note.action.AddNoteAction" text="添加笔记">
+                class="com.chuanskqi.note.action.AddNoteAction" text="add a note">
             <!-- 把这个Action事件 绑定到 IDEA右键点击目录上 -->
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
         </action>

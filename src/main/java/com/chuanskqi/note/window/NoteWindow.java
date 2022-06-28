@@ -1,6 +1,7 @@
 package com.chuanskqi.note.window;
 
 import com.chuanskqi.note.service.NoteContext;
+import com.chuanskqi.note.service.NoteContextHolder;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
@@ -19,9 +20,10 @@ public class NoteWindow implements ToolWindowFactory {
     public void createToolWindowContent(Project project, ToolWindow toolWindow) {
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         // 初始化笔记内容, 从笔记文件中读取笔记内容
-        NoteContext.init(project);
+        NoteContext noteContext = new NoteContext(project);
+        NoteContextHolder.regist(project, noteContext);
         // 创建一个JComponent展示框,并填充笔记内容
-        JComponent centerPanel = NoteContext.getShowNoteViewWapper().createCenterPanel();
+        JComponent centerPanel = noteContext.getShowNoteViewWapper().createCenterPanel();
         Content content = contentFactory.createContent(centerPanel, "my note", false);
         // 添加到IDEA窗口里就完成了插件窗口注册
         toolWindow.getContentManager().addContent(content);

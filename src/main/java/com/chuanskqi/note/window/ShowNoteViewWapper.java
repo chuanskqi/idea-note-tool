@@ -1,7 +1,7 @@
 package com.chuanskqi.note.window;
 
 import com.chuanskqi.note.pojo.Note;
-import com.chuanskqi.note.service.NoteContext;
+import com.chuanskqi.note.service.NoteService;
 import com.chuanskqi.note.util.CodeUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -36,15 +36,18 @@ public class ShowNoteViewWapper extends DialogWrapper {
 
     private Project project;
 
+    private NoteService noteService;
     /**
      * 记录左后一次选中的节点
      */
     private DefaultMutableTreeNode lastSelectedNode;
 
-    public ShowNoteViewWapper(Project project) {
+
+    public ShowNoteViewWapper(Project project, NoteService noteService) {
         super(true);
         setTitle("note_view");
         this.project = project;
+        this.noteService = noteService;
         init();
 
     }
@@ -64,7 +67,7 @@ public class ShowNoteViewWapper extends DialogWrapper {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode();
         root.setUserObject(project.getName());
 
-        List<Note> allNotes = NoteContext.getNoteService().getAllNotes();
+        List<Note> allNotes = noteService.getAllNotes();
         if (CollectionUtils.isNotEmpty(allNotes)) {
             // 按目录分组
             Map<String, List<Note>> noteMap = allNotes.stream()
@@ -144,7 +147,7 @@ public class ShowNoteViewWapper extends DialogWrapper {
             Note newNote = Note.builder()
                 .category(newCategoryName)
                 .project(project.getName()).build();
-            NoteContext.getNoteService().addNote(newNote);
+            noteService.addNote(newNote);
             model.reload();
         }
     }
@@ -162,7 +165,7 @@ public class ShowNoteViewWapper extends DialogWrapper {
             DefaultMutableTreeNode categoryNode = (DefaultMutableTreeNode) children.nextElement();
             if (StringUtils.equals((String) categoryNode.getUserObject(), category)) {
                 newChildNode(categoryNode, note);
-                NoteContext.getNoteService().addNote(note);
+                noteService.addNote(note);
                 model.reload();
                 // 展开笔记节点
                 expandCategoryNode(categoryNode);
@@ -212,7 +215,7 @@ public class ShowNoteViewWapper extends DialogWrapper {
                     // 没有笔记的时候,才允许删除目录
                     DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
                     root.remove(lastSelectedNode);
-                    NoteContext.getNoteService().deleteNoteByCategory((String) node);
+                    noteService.deleteNoteByCategory((String) node);
                     model.reload();
                 }
             }
@@ -224,7 +227,7 @@ public class ShowNoteViewWapper extends DialogWrapper {
                 parent.remove(lastSelectedNode);
                 lastSelectedNode = parent;
 
-                NoteContext.getNoteService().deleteNoteById(note.getId());
+                noteService.deleteNoteById(note.getId());
                 model.reload();
             }
         }
@@ -250,7 +253,7 @@ public class ShowNoteViewWapper extends DialogWrapper {
                     note.setCategory(newCategoryName);
                 }
 
-                NoteContext.getNoteService().editCategory((String) categoryName, newCategoryName);
+                noteService.editCategory((String) categoryName, newCategoryName);
                 model.reload();
             }
         }
